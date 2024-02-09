@@ -1,0 +1,5 @@
+Fig2b shows the meshes of doublet 2, taken from the following files:
+
+time22_cell_1.ply time43_cell_1.ply time68_cell_1.ply
+
+time22_cell_2.ply time43_cell_2.ply time68_cell_2.ply
