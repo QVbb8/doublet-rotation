@@ -133,6 +133,18 @@ def bootstrap_double(data1,data2,nsample):
     
     return (sample_diff,np.sum(np.array(sample_diff)<0)/len(sample_diff))
 
+def bootstrap(data,pos,nsample):
+    #give p-value for mean of data being positive or negative
+    sample_mean=[]
+    for i in range(nsample):
+        y=choices(data,k=len(data))
+        sample_mean.append(np.mean(y))
+
+    if pos==True:
+        return (sample_mean, np.sum(np.array(sample_mean)<0)/len(sample_mean))
+    else:
+        return (sample_mean, np.sum(np.array(sample_mean)>0)/len(sample_mean))
+
 
 #------------------------------------------------------------------------------
 #Loop on doublets, generating the individual curve for each doublet
@@ -258,7 +270,17 @@ ax1.tick_params(axis='both', which='major', labelsize=5, pad=2)
 #slope after ablation
 #------------------------------------------------------------------------------   
 
-a,b=bootstrap_double(slopes_before,slopes_act,500000)
-print(b)
-
-
+p_arr=[]
+for i in range(10):
+    a,b=bootstrap_double(slopes_before,slopes_act,50000)
+    p_arr.append(b)
+    
+plt.figure()  
+plt.hist(p_arr)
+    
+#extract 95% confidence interval from the 10 replicates
+s,p=bootstrap(p_arr,True,1000)
+a,b,c=plt.hist(s,bins=40,cumulative=True)
+m=b[np.argmax(a>=25)]
+M=b[np.argmax(a>=975)]
+print(f'{(M+m)/2} p/m {(M-m)/2}')

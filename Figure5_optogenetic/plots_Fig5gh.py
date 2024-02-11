@@ -344,16 +344,42 @@ dx_bef=np.array(dx_bef)
 dx_aft=np.array(dx_aft)
 dx_diff=np.abs(dx_aft)-np.abs(dx_bef)
 
-a,b=bootstrap(dx_diff,100000)
-print(b)
+
+p_arr=[]
+for i in range(10):
+    a,b=bootstrap(dx_diff,50000)
+    p_arr.append(b)
+    
+plt.figure()  
+plt.hist(p_arr)
+    
+#extract 95% confidence interval from the 10 replicates
+s,p=bootstrap(p_arr,1000)
+a,b,c=plt.hist(s,bins=40,cumulative=True)
+m=b[np.argmax(a>=25)]
+M=b[np.argmax(a>=975)]
+print(f'{(M+m)/2} p/m {(M-m)/2}')
 
 #------------------------------------------------------------------------------
 #Statistical test of figure 5.h, average change of slope during the activation
 #period compared to before the activation
 #------------------------------------------------------------------------------
 
-a,b=bootstrap(Delta_slope,100000)
-print(1-b)
+
+p_arr=[]
+for i in range(10):
+    a,b=bootstrap(Delta_slope,50000)
+    p_arr.append(1-b)
+    
+plt.figure()  
+plt.hist(p_arr)
+    
+#extract 95% confidence interval from the 10 replicates
+s,p=bootstrap(p_arr,1000)
+a,b,c=plt.hist(s,bins=40,cumulative=True)
+m=b[np.argmax(a>=25)]
+M=b[np.argmax(a>=975)]
+print(f'{(M+m)/2} p/m {(M-m)/2}')
 
 
 

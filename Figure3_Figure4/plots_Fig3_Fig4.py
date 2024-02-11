@@ -729,10 +729,21 @@ data=plt.hist(beta)
 fig=F4.polar_hist(data,beta_angle)
 
 
-#statistical test (not significantly different from 180 degrees)
-#s,p=bootstrap_beta(beta,np.pi,True,1000)
-#p
+#statistical test (not significantly different from 180 degrees) 10 replicates with 
+#1000 samples
+p_arr=[]
+for i in range(10):
+    s,p=bootstrap_beta(beta,np.pi,True,1000)
+    p_arr.append(p)
     
+#extract 95% confidence interval from the 10 replicates
+s,p=F.bootstrap(p_arr,True,1000)
+a,b,c=plt.hist(s,bins=40,cumulative=True)
+m=b[np.argmax(a>=25)]
+M=b[np.argmax(a>=975)]
+print(f'{(M+m)/2} p/m {(M-m)/2}')
+
+
 #------------------------------------------------------------------------------
 #Figure 3.k - Distribution of alpha
 #------------------------------------------------------------------------------
@@ -781,8 +792,8 @@ ax05.legend(prop=font)
 
 np.mean(all_omega_corr_p1_diff_avg)
 
-#s,p=F.bootstrap(all_omega_corr_p1_diff_avg,True,100000)
-#p
+s,p=F.bootstrap(all_omega_corr_p1_diff_avg,True,50000)
+p
 
 #------------------------------------------------------------------------------
 #Figure 3.m Correlation of Y12 and p1-p2
@@ -807,8 +818,8 @@ ax07.legend(prop=font)
 
 np.mean(all_p1_dot_ydir)
 
-#s,p=F.bootstrap(all_p1_dot_ydir,False,100000)
-#p
+s,p=F.bootstrap(all_p1_dot_ydir,False,50000)
+p
 
 #------------------------------------------------------------------------------
 #Figure 3.n Map of myosin signal around Omega and r12
@@ -1079,7 +1090,7 @@ sum_sigma_del=np.delete(all_sigma_c1+all_sigma_c2,ind_to_del)
 ang_velocity_del=np.delete(ang_velocity,ind_to_del)
 
 #number of samples in boostrapping must be adjusted here to obtain a precise p-value
-fig, ax = F4.plot_correlation(sum_sigma_del, ang_velocity_del, r'$\sigma_1/I_1 + \sigma_2/I_2$', r'$\omega$', 2000)
+fig, ax = F4.plot_correlation(sum_sigma_del, ang_velocity_del, r'$\sigma_1/I_1 + \sigma_2/I_2$', r'$\omega$', 50000)
 ax.set_xlim([0,4])
 ax.set_ylim([0,1])
 ax.set_yticks([0,0.2,0.4,0.6,0.8,1])
@@ -1094,7 +1105,7 @@ ax.set_yticks([0,0.2,0.4,0.6,0.8,1])
 yin_yang_height_del=np.delete(yin_yang_height,ind_to_del)
 
 #number of samples in boostrapping must be adjusted here to obtain a precise p-value
-fig, ax = F4.plot_correlation(sum_sigma_del, yin_yang_height_del, r'$\sigma_1/I_1 + \sigma_2/I_2$', r'$\sqrt{\langle H_{y-y}^2 \rangle}/R$', 1000)
+fig, ax = F4.plot_correlation(sum_sigma_del, yin_yang_height_del, r'$\sigma_1/I_1 + \sigma_2/I_2$', r'$\sqrt{\langle H_{y-y}^2 \rangle}/R$', 50000)
 ax.set_xlim([0,4])
 ax.set_ylim([0,0.12])
 ax.set_yticks([0,0.05,0.1])
@@ -1127,11 +1138,30 @@ bowl_amplitude_sym_del = np.hstack((np.array(bowl_amplitude_del), -np.array(bowl
 delta_int_sym_del = np.hstack((delta_int_del, -delta_int_del))
 
 #Adjust the number of samples to at least 100 000 to obtain an accurate p-value
-fig, ax = F4.plot_correlation(delta_int_sym_del, bowl_amplitude_sym_del, r'$(\langle I_1\rangle - \langle I_2 \rangle)/ (\langle I_1\rangle + \langle I_2 \rangle)$', r'$B_{12}$', 500)
+fig, ax = F4.plot_correlation(delta_int_sym_del, bowl_amplitude_sym_del, r'$(\langle I_1\rangle - \langle I_2 \rangle)/ (\langle I_1\rangle + \langle I_2 \rangle)$', r'$B_{12}$', 200000)
 ax.axvline(0, color = 'k', linewidth = 0.5, alpha = 0.6)
 ax.axhline(0, color = 'k', linewidth = 0.5, alpha = 0.6)
 F4.set_xlim_ylim(ax, [-0.4, 0.4], [-0.2, 0.2])
 F4.set_xticks_yticks(ax,[-0.4, -0.2, 0.0, 0.2, 0.4], [-0.2, -0.1, 0.0, 0.1, 0.2])
+
+
+p_arr=[]
+for i in range(10):
+    fig, ax,p = F4.plot_correlation_more_info(delta_int_sym_del, bowl_amplitude_sym_del, r'$(\langle I_1\rangle - \langle I_2 \rangle)/ (\langle I_1\rangle + \langle I_2 \rangle)$', r'$B_{12}$', 50000)
+    p_arr.append(1-p)
+    
+plt.figure()  
+plt.hist(p_arr)
+    
+#extract 95% confidence interval from the 10 replicates
+s,p=F.bootstrap(p_arr,True,1000)
+a,b,c=plt.hist(s,bins=40,cumulative=True)
+m=b[np.argmax(a>=25)]
+M=b[np.argmax(a>=975)]
+print(f'{(M+m)/2} p/m {(M-m)/2}')
+
+
+
 
 #------------------------------------------------------------------------------
 #Figure 4.m - correlation of the orientation of the saddle-node deformation 
@@ -1151,8 +1181,8 @@ F4.set_xticks_yticks(ax,[-1.0,0.0,1.0],[0,5,10,15])
 ax.tick_params(axis='both', which='major', labelsize=7, pad=2)
 
 #statistical test
-#s,p=F.bootstrap(dQn_Qsn,False,50000)
-#p
+s,p=F.bootstrap(dQn_Qsn,False,50000)
+p
 
 
 

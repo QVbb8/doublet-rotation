@@ -249,6 +249,11 @@ for i,t in enumerate(np.linspace(startpoint, endpoint, endpoint-startpoint+1)):
         Znew = coeff[0]+coeff[1]*Xnew + coeff[2]*Ynew + coeff[3]*Xnew**2 + coeff[4]*Xnew*Ynew + coeff[5]*Ynew**2
         Znew += coeff[6]*Xnew**2*Ynew + coeff[7]*Xnew*Ynew**2 + coeff[8]*Xnew**3 +coeff[9]*Ynew**3
         
+        #computation of the mean interface deflection using the simplest method of averaging on 
+        #discrete (but regularly spaced) points, instead of integrating analytically the polynomial
+        #we add the scale factor correction to get a result in micrometers
+        print(f'{t} : {np.sqrt(np.mean((Znew*0.206)**2))}')
+        
         X = np.copy(Xnew)
         Y = np.copy(Ynew)
         
@@ -261,3 +266,4 @@ for i,t in enumerate(np.linspace(startpoint, endpoint, endpoint-startpoint+1)):
         ax1.get_yaxis().set_ticks([])
         fig1.patch.set_visible(False)
         ax1.axis('off')
+        fig1.savefig(f'{t}_map_interface.png')

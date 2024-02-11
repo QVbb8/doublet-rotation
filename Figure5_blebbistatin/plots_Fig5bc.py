@@ -314,50 +314,14 @@ ax01.set_xticklabels(x)
 ax01.set_ylim([0,3.0])
 ax01.tick_params(axis='both', which='major', pad=2)
 
-#Statistical tests for the decrease un rotation velocity (adjust sample number
-# for more accurate p-value, it stays zero even with 100 000 samples)
-#a,b=bootstrap_double(array_om[:,3],array_om[:,8],200000)
-#b
+#Statistical tests for the decrease un rotation velocity
+a,b=bootstrap_double(array_om[:,0:4].flatten(),array_om[:,8],50000)
+b
 
-#Alternative ttest that shows a p-value of 1.2.10^(-4)
-#stats.ttest_ind(array_om[:,3],array_om[:,8],equal_var=False,alternative='greater')
-
-#statistical test using bootstrapping for 
+#Statisticl test for the deflection of the interface
 array_h=height_all.reshape((5,10))
-a,b=bootstrap_double(array_h[:,3],array_h[:,9],2000000)
+a,b=bootstrap_double(array_h[:,0:4].flatten(),array_h[:,9],50000)
 b
-
-
-
-stats.ttest_ind(array_h[:,3],array_h[:,9],equal_var=False,alternative='greater')
-
-
-
-a,b=bootstrap_double(array_h[:,0:4].flatten(),array_h[:,9],2000000)
-b
-
-data=plt.hist(a,bins=1000)
-
-def Gauss(x,x0,a,b):
-    y=a*np.exp(-b*(x-x0)**2)
-    return y
-
-from scipy.optimize import curve_fit
-
-x=(data[1][:-1]+data[1][1:])*0.5
-y=data[0]
-par,cov=curve_fit(Gauss,x,y)
-
-x0=par[0]
-a=par[1]
-b=par[2]
-plt.figure()
-plt.plot(x,y)
-plt.plot(x,a*np.exp(-b*(x-x0)**2))
-
-
-
-stats.ttest_ind(array_h[:,0:4].flatten(),array_h[:,9],equal_var=False,alternative='greater')
 
 
 

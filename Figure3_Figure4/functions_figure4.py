@@ -1672,3 +1672,39 @@ def plot_correlation(x, y, xlabel, ylabel, nbootstrap):
     ax15.set_xlabel(xlabel, fontsize =7, labelpad = 3,  fontname=fname)
     
     return(fig15,ax15)
+
+def plot_correlation_more_info(x, y, xlabel, ylabel, nbootstrap):
+    
+    nbins = 10
+    nexcluded = 4
+    
+    fig15, ax15 = plt.subplots(figsize=(3.4*cm,3.22*cm))
+    
+    x = np.array(x)
+    y = np.array(y)
+    
+    x_mean, y_mean, y_std, nvalues = bin_plot_negative(x, y, nbins)
+    
+    ax15.scatter(x, y, s = 0.5, alpha = 0.5)
+    ax15.errorbar(x_mean[nvalues > nexcluded], y_mean[nvalues > nexcluded], yerr = y_std[nvalues > nexcluded], color = 'r', linewidth = 0.8)
+    
+    data_cor = [[p, y[i]] for i,p in enumerate(x)]
+    sample_cor, p_value = F.bootstrap_correl(data_cor, nbootstrap)
+    print('pvalue = ', p_value)
+    sample_cor_mean = np.mean(sample_cor)
+    sample_cor_std = np.std(sample_cor)
+    xtmp = np.linspace(np.min(x), np.max(x),100)
+    print('sample_cor_mean = ', sample_cor_mean)
+    line_plot = np.mean(y) + sample_cor_mean*(np.std(y)/np.std(x))*(xtmp-np.mean(x))
+    ax15.plot(xtmp, line_plot, '-g', linewidth = 0.7)
+    line_plot = np.mean(y) + (1.96*sample_cor_std+sample_cor_mean)*(np.std(y)/np.std(x))*(xtmp-np.mean(x))
+    ax15.plot(xtmp, line_plot, '-g', linewidth = 0.7, alpha = 0.2)
+    line_plot = np.mean(y) + (-1.96*sample_cor_std+sample_cor_mean)*(np.std(y)/np.std(x))*(xtmp-np.mean(x))
+    ax15.plot(xtmp, line_plot, '-g', linewidth = 0.7, alpha = 0.2)
+    
+    ax15.tick_params(axis='both', which='major', labelsize=7, pad=2)
+    ax15.set_ylabel(ylabel, fontsize =7, labelpad = 2, fontname=fname)
+    ax15.set_xlabel(xlabel, fontsize =7, labelpad = 3,  fontname=fname)
+    
+    return(fig15,ax15,p_value)
+
