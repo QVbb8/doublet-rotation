@@ -518,6 +518,44 @@ ax[2].set_xlabel(r'$\lambda_z$ ($\mu m^{-1}$)',fontsize =7, labelpad = 3, fontna
 ax[2].set_xlim([-0.04,0.04])
 ax[2].tick_params(axis='both', which='major', labelsize=7, pad=2)
 
+#Statistical bootstrap analysis of the sign of the mean of each length scales
+#along x,y and z 
+#for x,y: 10 replicates with 1000 samples is enough because the p-values are 
+#high (non significant)
+#for z we do one test with 50 000 samples showing that p<1e-4
+p_arr=[]
+for i in range(10):
+    s,p=F.bootstrap(all_px,True,1000)
+    p_arr.append(p)
+    
+plt.figure()  
+plt.hist(p_arr)
+
+#extract 95% confidence interval from the 10 replicates
+s,p=F.bootstrap(p_arr,True,1000)
+a,b,c=plt.hist(s,bins=40,cumulative=True)
+m=b[np.argmax(a>=25)]
+M=b[np.argmax(a>=975)]
+print(f'{(M+m)/2} p/m {(M-m)/2}')
+
+p_arr=[]
+for i in range(10):
+    s,p=F.bootstrap(all_py,True,1000)
+    p_arr.append(p)
+    
+plt.figure()  
+plt.hist(p_arr)
+
+#extract 95% confidence interval from the 10 replicates
+s,p=F.bootstrap(p_arr,True,1000)
+a,b,c=plt.hist(s,bins=40,cumulative=True)
+m=b[np.argmax(a>=25)]
+M=b[np.argmax(a>=975)]
+print(f'{(M+m)/2} p/m {(M-m)/2}')
+
+
+s,p=F.bootstrap(all_pz,False,50000)
+p
 
 #save txt file that will be loaded by the 'plots_Fig3_Fig4.py' script to remove the z dependency on the
 #myosin signal
