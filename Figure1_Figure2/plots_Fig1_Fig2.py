@@ -16,7 +16,6 @@ Created on Wed Dec 13 13:09:07 2023
 # Fig 2
 # b - elongation plot vs time 
 # c - correlation elongation omega 
-# e - map of height of interface -> Tristan?
 # f - deflection vs time 
 # g - relative mode amplitude 
 # h - correl mode rotation
