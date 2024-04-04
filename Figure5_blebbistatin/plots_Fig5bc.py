@@ -145,11 +145,6 @@ paths = ['./blebbistatin_data/Segmentation_3bebbistatin-1_ecad/',
          './blebbistatin_data/Segmentation_denoised_6_blebbistatin_ecad/',
          './blebbistatin_data/Segmentation_denoised_9_blebbistatin_ecad/']
 
-img_names = ['3bebbistatin-1.tif', 
-             '4-1raw-1.tif',
-             '5-1rwa-1-1.tif',
-             '6-raw-1.tif',
-             '9_de-1-1.tif']
 
 
 scale_factors = [1.0/0.103, 
@@ -168,8 +163,6 @@ height_all = []
 for k,path in enumerate(paths) :
     
     print(path)
-    
-    img = imread(path+img_names[k])
     
     scale_factor = scale_factors[k]
     
